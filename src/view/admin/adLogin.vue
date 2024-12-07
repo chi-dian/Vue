@@ -1,5 +1,5 @@
 <template>
-  <div class="adminLogin">
+  <div class="adLogin">
     <el-card style="max-width: 480px">
         <template #header>
           <div class="card-heard">
