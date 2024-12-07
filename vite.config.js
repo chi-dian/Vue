@@ -17,10 +17,11 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/work': {
-        target: 'http://localhost:7071',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/work/, '')
+      // 代理规则
+      '/api': {
+        target: 'http://localhost:7071', // 后端服务器地址
+        changeOrigin: true, // 改变源
+        rewrite: (path) => path.replace(/^\/api/, '') // 重写路径
       }
     }
   }

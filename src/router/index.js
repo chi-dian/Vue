@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import adClazzify from '@/view/admin/adClazzify.vue'; // 确保路径正确
 import adLogin from '@/view/admin/adLogin.vue'
+import userLogin  from '@/view/user/userLogin.vue';
 
 // 定义路由
 const routes = [
@@ -14,6 +15,11 @@ const routes = [
     path:'/adLogin',
     name:'adLogin',
     component:adLogin,
+  },
+  {
+    path:'/userLogin',
+    name:'userLogin',
+    component:userLogin
   },
   // ...其他路由
 ];
