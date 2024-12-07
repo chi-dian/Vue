@@ -3,13 +3,11 @@ import axios from 'axios';
 
 
 
-export function getCode() {
+export function getCode(params) {
   const config = {
     method: 'get',
-    url: 'http://localhost:7071/work/account/checkCode',
-    headers: {
-      'User-Agent': ''
-    }
+    url: '/work/account/checkCode',
+    params:params
   };
 
   return axios(config)
@@ -28,9 +26,6 @@ export function register(email, nickName, registerPassword, checkCodeKey, checkC
   const config = {
     method: 'post',
     url: `http://localhost:7071/web/account/register?email=${email}&nickName=${nickName}&registerPassword=${registerPassword}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
-    headers: {
-      'User-Agent': ''
-    }
   };
 
   return axios(config)
@@ -63,10 +58,8 @@ export function register(email, nickName, registerPassword, checkCodeKey, checkC
 export function login(email, password, checkCodeKey, checkCode) {
   var config = {
     method: 'post',
-    url: `http://localhost:7071/work/account/login?email=${email}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
-    headers: {
-      'User-Agent': ''
-    }
+    url: `/work/account/login?email=${email}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
+
   };
 
   return axios(config)
@@ -105,10 +98,8 @@ export function login(email, password, checkCodeKey, checkCode) {
 export function logOut() {
   var config = {
     method: 'get',
-    url: 'http://localhost:7071/work/account/logout',
-    headers: {
-      'User-Agent': ''
-    }
+    url: '/work/account/logout',
+
   };
 
   return axios(config)
@@ -146,9 +137,7 @@ export function obUserInfo() {
   const config = {
     method: 'get',
     url: 'http://localhost:7071/work/account/checkCode',
-    headers: {
-      'User-Agent': ''
-    }
+
   };
 
   return axios(config)
@@ -194,9 +183,7 @@ export function updateUser(nickName, avatar, sex, birthday, school, personIntrod
   const config = {
     method: 'post',
     url: `http://localhost:7071/web/account/updateUserInfo?nickName=${encodeURIComponent(nickName)}&avatar=${encodeURIComponent(avatar)}&sex=${encodeURIComponent(sex)}&birthday=${encodeURIComponent(birthday)}&school=${encodeURIComponent(school)}&personIntroduction=${encodeURIComponent(personIntroduction)}&noticeInfo=${encodeURIComponent(noticeInfo)}`,
-    headers: {
-      'User-Agent': ''
-    }
+
   };
 
   return axios(config)
@@ -228,7 +215,7 @@ export function updateUser(nickName, avatar, sex, birthday, school, personIntrod
 
 
 /**
- * 用户登录的函数
+ * 管理员用户登录的函数
  * @param {string} account 用户账号
  * @param {string} password 用户密码
  * @param {string} checkCodeKey 验证码密钥
@@ -239,9 +226,7 @@ export function userLogin(account, password, checkCodeKey, checkCode) {
   const config = {
     method: 'post',
     url: `http://localhost:7071/work/admin/account/login?account=${account}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
-    headers: {
-      'User-Agent': ''
-    }
+
   };
 
   return axios(config)
@@ -271,6 +256,9 @@ export function userLogin(account, password, checkCodeKey, checkCode) {
 //   });
 
 
+
+
+
 /**
  * 检查验证码的函数
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
@@ -279,9 +267,7 @@ export function useCode() {
   const config = {
     method: 'get',
     url: 'http://localhost:7071/work/admin/account/checkCode',
-    headers: {
-      'User-Agent': ''
-    }
+
   };
 
   return axios(config)
@@ -319,9 +305,7 @@ export function quitLogin() {
   const config = {
     method: 'get',
     url: 'http://localhost:7071/work/admin/account/logout',
-    headers: {
-      'User-Agent': ''
-    }
+
   };
 
   return axios(config)

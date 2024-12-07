@@ -1,6 +1,6 @@
 // api.js
 import axios from 'axios';
-import { jsonToObject } from '@/store/module/jsonToObject'; // 确保路径正确
+
 
 const loadCategory = (pageNo) => {
   const config = {
@@ -14,7 +14,7 @@ const loadCategory = (pageNo) => {
   return axios(config)
     .then(function (response) {
       console.log(JSON.stringify(response.data));
-      return jsonToObject(response.data); // 使用转换函数
+      return response.data; // 使用转换函数
     })
     .catch(function (error) {
       console.error(error);
