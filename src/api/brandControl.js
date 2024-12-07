@@ -14,7 +14,6 @@ export function addBrand(brandId, brandDesc, brandName, adminToken) {
     url: `http://localhost:7071/work/admin/brand/saveBrand?brandId=${brandId}&brandDesc=${brandDesc}&brandName=${brandName}`,
     headers: {
       'adminToken': adminToken,
-      'User-Agent': ''
     }
   };
 
@@ -62,7 +61,6 @@ export function delBrand(brandId, adminToken) {
     url: `http://localhost:7071/work/admin/brand/saveBrand?brandId=${brandId}`,
     headers: {
       'adminToken': adminToken,
-      'User-Agent': ''
     }
   };
 
@@ -103,7 +101,6 @@ export function getBrandList() {
     method: 'get',
     url: 'http://localhost:7071/work/admin/brand/getBrand',
     headers: {
-      'User-Agent': ''
     }
   };
 

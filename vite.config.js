@@ -18,10 +18,10 @@ export default defineConfig({
   server: {
     proxy: {
       // 代理规则
-      '/api': {
+      '/work': {
         target: 'http://localhost:7071', // 后端服务器地址
         changeOrigin: true, // 改变源
-        rewrite: (path) => path.replace(/^\/api/, '') // 重写路径
+        rewrite: (path) => path.replace(/^\/work/, '/work') // 重写路径
       }
     }
   }

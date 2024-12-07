@@ -3,10 +3,11 @@ import axios from 'axios';
 
 
 
-export function getCode() {
+export function getCode(params) {
   const config = {
     method: 'get',
-    url: 'http://localhost:7071/work/account/checkCode',
+    url: '/work/account/checkCode',
+    params:params
   };
 
   return axios(config)
@@ -57,7 +58,7 @@ export function register(email, nickName, registerPassword, checkCodeKey, checkC
 export function login(email, password, checkCodeKey, checkCode) {
   var config = {
     method: 'post',
-    url: `http://localhost:7071/work/account/login?email=${email}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
+    url: `/work/account/login?email=${email}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
 
   };
 
@@ -97,7 +98,7 @@ export function login(email, password, checkCodeKey, checkCode) {
 export function logOut() {
   var config = {
     method: 'get',
-    url: 'http://localhost:7071/work/account/logout',
+    url: '/work/account/logout',
 
   };
 
@@ -304,7 +305,7 @@ export function quitLogin() {
   const config = {
     method: 'get',
     url: 'http://localhost:7071/work/admin/account/logout',
-    
+
   };
 
   return axios(config)

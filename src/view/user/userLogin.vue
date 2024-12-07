@@ -9,7 +9,7 @@
         </div>
       </template>
       <!-- 登录表单 -->
-      <el-form ref="userForm" :model="userForm" label-width="120px" v-show="isLogin">
+      <el-form ref="userFormRef" :model="userForm" label-width="120px" v-show="isLogin">
         <el-form-item label="账号">
           <el-input v-model="userForm.username" placeholder="请输入账号"></el-input>
         </el-form-item>
@@ -18,6 +18,8 @@
         </el-form-item>
         <el-form-item label="验证码">
           <el-input v-model="userForm.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
+          <!-- 显示获取到的验证码 -->
+          <span class="captcha-display">{{ captchaCode }}</span>
           <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
         </el-form-item>
       </el-form>
@@ -31,6 +33,8 @@
         </el-form-item>
         <el-form-item label="验证码">
           <el-input v-model="userForm.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
+          <!-- 显示获取到的验证码 -->
+          <span class="captcha-display">{{ captchaCode }}</span>
           <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
         </el-form-item>
       </el-form>
@@ -60,8 +64,9 @@ const userForm = reactive({
   captcha: '',
   checkCodeKey: '' // 验证码密钥
 });
-const responseMessage = ref('');
 const captchaLoading = ref(false);
+const responseMessage = ref('');
+const captchaCode = ref(''); // 存储验证码的响应式数据
 
 // 获取验证码的方法
 const getCaptcha = async () => {
@@ -69,6 +74,7 @@ const getCaptcha = async () => {
     captchaLoading.value = true;
     const response = await getCode(); // 假设后端提供了获取验证码的API
     userForm.checkCodeKey = response.checkCodeKey;
+    captchaCode.value = response.captcha; // 假设后端返回的验证码在响应的 captcha 字段
     ElMessage.success('验证码已发送');
   } catch (error) {
     ElMessage.error('验证码获取失败');
@@ -86,7 +92,8 @@ const submitForm = async () => {
     try {
       const response = await login(userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('登录成功');
-      return response.data;
+      return response.data
+      //*********************************************** */
       // 处理登录成功的逻辑，例如跳转到主页
     } catch (error) {
       responseMessage.value = error.message || '登录失败';
@@ -96,8 +103,8 @@ const submitForm = async () => {
     try {
       const response = await register(userForm.email, userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('注册成功');
-      console.log(response);
-
+      return response.data;
+      /************************** */
       // 处理注册成功的逻辑，例如跳转到登录页面
     } catch (error) {
       responseMessage.value = error.message || '注册失败';
@@ -143,5 +150,12 @@ const toggleView = () => {
   color: red;
   text-align: center;
   margin-top: 10px;
+}
+
+.captcha-display {
+  margin-left: 10px;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 4px;
 }
 </style>
