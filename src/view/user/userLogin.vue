@@ -28,6 +28,9 @@
         <el-form-item label="邮箱">
           <el-input v-model="userForm.email" placeholder="请输入邮箱"></el-input>
         </el-form-item>
+        <el-form-item label="输入密码">
+          <el-input type="password" v-model="userForm.password" placeholder="请输入密码"></el-input>
+        </el-form-item>
         <el-form-item label="确认密码">
           <el-input type="password" v-model="userForm.confirmPassword" placeholder="请确认密码"></el-input>
         </el-form-item>
@@ -105,11 +108,19 @@ const submitForm = async () => {
       responseMessage.value = error.message || '登录失败';
     }
   } else {
+      if (userForm.password!=userForm.confirmPassword) {
+        ElMessage.error('两次输入密码不一致');
+        return null
+      }
     // 注册逻辑
     try {
-      const response = await register(userForm.email, userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
+      const response = await register(userForm.us,userForm.email, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('注册成功');
-      return response.data
+      let result = response.data;
+      if(result.status=="error"){
+        ElMessage.error(result.info+result.data);
+      }
+      return result
       // 处理注册成功的逻辑，例如跳转到登录页面
     } catch (error) {
       responseMessage.value = error.message || '注册失败';
