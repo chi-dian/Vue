@@ -3,16 +3,18 @@ import axios from 'axios';
 
 
 
-export function getCode(params) {
+export function getCode() {
   const config = {
     method: 'get',
     url: '/work/account/checkCode',
-    params:params
+    //params:params
   };
 
   return axios(config)
     .then(function (response) {
       console.log(JSON.stringify(response.data));
+      console.log(response.data);
+
       return response.data; // 返回响应数据
     })
     .catch(function (error) {
@@ -25,7 +27,7 @@ export function getCode(params) {
 export function register(email, nickName, registerPassword, checkCodeKey, checkCode) {
   const config = {
     method: 'post',
-    url: `http://localhost:7071/web/account/register?email=${email}&nickName=${nickName}&registerPassword=${registerPassword}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
+    url: `/work/account/register?email=${email}&nickName=${nickName}&registerPassword=${registerPassword}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
   };
 
   return axios(config)
@@ -136,7 +138,7 @@ export function logOut() {
 export function obUserInfo() {
   const config = {
     method: 'get',
-    url: 'http://localhost:7071/work/account/checkCode',
+    url: '/work/account/checkCode',
 
   };
 
@@ -182,7 +184,7 @@ export function obUserInfo() {
 export function updateUser(nickName, avatar, sex, birthday, school, personIntroduction, noticeInfo) {
   const config = {
     method: 'post',
-    url: `http://localhost:7071/web/account/updateUserInfo?nickName=${encodeURIComponent(nickName)}&avatar=${encodeURIComponent(avatar)}&sex=${encodeURIComponent(sex)}&birthday=${encodeURIComponent(birthday)}&school=${encodeURIComponent(school)}&personIntroduction=${encodeURIComponent(personIntroduction)}&noticeInfo=${encodeURIComponent(noticeInfo)}`,
+    url: `/work/account/updateUserInfo?nickName=${encodeURIComponent(nickName)}&avatar=${encodeURIComponent(avatar)}&sex=${encodeURIComponent(sex)}&birthday=${encodeURIComponent(birthday)}&school=${encodeURIComponent(school)}&personIntroduction=${encodeURIComponent(personIntroduction)}&noticeInfo=${encodeURIComponent(noticeInfo)}`,
 
   };
 
@@ -225,7 +227,7 @@ export function updateUser(nickName, avatar, sex, birthday, school, personIntrod
 export function userLogin(account, password, checkCodeKey, checkCode) {
   const config = {
     method: 'post',
-    url: `http://localhost:7071/work/admin/account/login?account=${account}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
+    url: `/work/admin/account/login?account=${account}&password=${password}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
 
   };
 
@@ -266,7 +268,7 @@ export function userLogin(account, password, checkCodeKey, checkCode) {
 export function useCode() {
   const config = {
     method: 'get',
-    url: 'http://localhost:7071/work/admin/account/checkCode',
+    url: '/work/admin/account/checkCode',
 
   };
 
@@ -304,7 +306,7 @@ export function useCode() {
 export function quitLogin() {
   const config = {
     method: 'get',
-    url: 'http://localhost:7071/work/admin/account/logout',
+    url: '/work/admin/account/logout',
 
   };
 

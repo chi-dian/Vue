@@ -18,8 +18,8 @@
         </el-form-item>
         <el-form-item label="验证码">
           <el-input v-model="userForm.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
-          <!-- 显示获取到的验证码 -->
-          <span class="captcha-display">{{ captchaCode }}</span>
+          <!-- 显示获取到的验证码图片 -->
+          <img :src="imageData" alt="验证码" @click="getCaptcha" style="cursor: pointer;"/>
           <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
         </el-form-item>
       </el-form>
@@ -33,8 +33,8 @@
         </el-form-item>
         <el-form-item label="验证码">
           <el-input v-model="userForm.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
-          <!-- 显示获取到的验证码 -->
-          <span class="captcha-display">{{ captchaCode }}</span>
+          <!-- 显示获取到的验证码图片 -->
+          <img :src="imageData" alt="验证码" @click="getCaptcha" style="cursor: pointer;"/>
           <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
         </el-form-item>
       </el-form>
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getCode, register, login } from '@/api/user'; // 确保路径正确
 
@@ -66,15 +66,17 @@ const userForm = reactive({
 });
 const captchaLoading = ref(false);
 const responseMessage = ref('');
-const captchaCode = ref(''); // 存储验证码的响应式数据
+const imageData = ref(''); // 存储图像的Base64数据
 
 // 获取验证码的方法
 const getCaptcha = async () => {
   try {
     captchaLoading.value = true;
     const response = await getCode(); // 假设后端提供了获取验证码的API
-    userForm.checkCodeKey = response.checkCodeKey;
-    captchaCode.value = response.captcha; // 假设后端返回的验证码在响应的 captcha 字段
+    userForm.checkCodeKey = response.data.checkCodeKey;
+    const base64Data = response.data.checkCode.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''); // 移除data URL的MIME类型部分
+    imageData.value = `data:image/png;base64,${base64Data}`; // 更新imageData
+
     ElMessage.success('验证码已发送');
   } catch (error) {
     ElMessage.error('验证码获取失败');
@@ -83,6 +85,11 @@ const getCaptcha = async () => {
     captchaLoading.value = false;
   }
 };
+
+// 在组件挂载后获取初始验证码
+onMounted(() => {
+  getCaptcha();
+});
 
 // 提交表单的方法
 const submitForm = async () => {
@@ -93,7 +100,6 @@ const submitForm = async () => {
       const response = await login(userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('登录成功');
       return response.data
-      //*********************************************** */
       // 处理登录成功的逻辑，例如跳转到主页
     } catch (error) {
       responseMessage.value = error.message || '登录失败';
@@ -103,8 +109,7 @@ const submitForm = async () => {
     try {
       const response = await register(userForm.email, userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('注册成功');
-      return response.data;
-      /************************** */
+      return response.data
       // 处理注册成功的逻辑，例如跳转到登录页面
     } catch (error) {
       responseMessage.value = error.message || '注册失败';
