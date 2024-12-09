@@ -56,6 +56,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getCode, register, login } from '@/api/user'; // 确保路径正确
+import { useRouter } from 'vue-router';
 
 // 响应式数据
 const isLogin = ref(true);
@@ -70,6 +71,7 @@ const userForm = reactive({
 const captchaLoading = ref(false);
 const responseMessage = ref('');
 const imageData = ref(''); // 存储图像的Base64数据
+const router=useRouter();//创建router实例
 
 // 获取验证码的方法
 const getCaptcha = async () => {
@@ -102,7 +104,9 @@ const submitForm = async () => {
     try {
       const response = await login(userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('登录成功');
+      router.push('userInfo')
       return response.data
+
       // 处理登录成功的逻辑，例如跳转到主页
     } catch (error) {
       responseMessage.value = error.message || '登录失败';
