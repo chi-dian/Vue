@@ -23,23 +23,27 @@ export function getCode() {
     });
 }
 
-
-export function register(email, nickName, registerPassword, checkCodeKey, checkCode) {
-  const config = {
+export function register(nickName, email, registerPassword, checkCodeKey, checkCode) {
+  var config = {
     method: 'post',
-    url: `/work/account/register?email=${email}&nickName=${nickName}&registerPassword=${registerPassword}&checkCodeKey=${checkCodeKey}&checkCode=${checkCode}`,
+    url: `/work/account/register?nickName=${encodeURIComponent(nickName)}&email=${encodeURIComponent(email)}&registerPassword=${encodeURIComponent(registerPassword)}&checkCodeKey=${encodeURIComponent(checkCodeKey)}&checkCode=${encodeURIComponent(checkCode)}`,
+
   };
 
+  console.log(config)
   return axios(config)
     .then(function (response) {
       console.log(JSON.stringify(response.data));
-      return response.data; // 返回响应数据
+      return response.data; // 返回响应数据，方便调用者进一步处理
     })
     .catch(function (error) {
-      console.error(error);
-      throw error; // 抛出错误，以便调用者可以处理
+      console.log(error);
+      throw error; // 将错误抛出，方便调用者进一步处理
     });
 }
+
+// 使用示例
+// register('<nickName>', '<email>', '<registerPassword>', '<checkCodeKey>', '<checkCode>');
 // 使用指南
 // 导入函数：
 // 在其他文件中，您可以导入 register 函数并使用它：
