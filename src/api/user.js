@@ -142,7 +142,7 @@ export function logOut() {
 export function obUserInfo() {
   const config = {
     method: 'get',
-    url: '/work/account/checkCode',
+    url: '/work/account/getUserInfo',
 
   };
 
@@ -317,7 +317,7 @@ export function quitLogin() {
   return axios(config)
     .then(function (response) {
       console.log(JSON.stringify(response.data));
-      return response.data; // 返回响应数据
+      return JSON.stringify(response.data); // 返回响应数据
     })
     .catch(function (error) {
       console.error(error);
