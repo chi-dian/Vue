@@ -142,7 +142,7 @@ export function logOut() {
 export function obUserInfo() {
   const config = {
     method: 'get',
-    url: '/work/account/checkCode',
+    url: '/work/account/getUserInfo',
 
   };
 
