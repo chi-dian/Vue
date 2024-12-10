@@ -1,57 +1,55 @@
 import axios from 'axios';
 import FormData from 'form-data';
 
+
 /**
- * 上传图片的函数
- * @param {File} file 要上传的文件对象
- * @param {string} token 认证令牌
- * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
+ * 上传文件的函数
+ * @param {string} filePath - 要上传的文件路径
+ * @param {string} token - 用户的认证 token
+ * @returns {Promise} - 返回一个 Promise，解析为上传结果
  */
-export function uploadIm(file, token) {
-  var formData = new FormData();
-  formData.append('file', file);
+export function userUpLoad(file) {
+  return new Promise((resolve, reject) => {
+    // 创建 FormData 实例
+    const formData = new FormData();
+    formData.append('file', file); // 直接使用文件对象
 
-  var config = {
-    method: 'post',
-    url: `http://localhost:7071/work/file/uploadImage?file=${file.name}`,
-    headers: {
-      'token': token,
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-      ...formData.getHeaders()
-    },
-    data: formData
-  };
+    // 准备上传配置
+    const config = {
+      method: 'post',
+      url: '/work/file/uploadImage', // 确保这是正确的上传 URL
+      headers: {
+        'Content-Type': 'multipart/form-data',
 
-  return axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      return response.data; // 返回响应数据
+      },
+    };
+
+    // 使用 axios 发送请求
+    axios({
+      ...config,
+      data: formData, // 将 FormData 作为请求体
     })
-    .catch(function (error) {
-      console.error(error);
-      throw error; // 抛出错误，以便调用者可以处理
+    .then(response => {
+      // 成功时，将响应数据传递出去
+      resolve(response.data);
+    })
+    .catch(error => {
+      // 失败时，将错误信息传递出去
+      reject(error);
     });
+  });
 }
-//  使用指南
-//  导入函数：
-//  在其他文件中，您可以导入 uploadIm 函数并使用它：
+// // 使用示例
+// const filePath = '<file>'; // 替换为实际文件路径
+// const token = '<token>'; // 替换为实际 token
 
-//  javascript
-//  import { uploadIm } from './path/to/your/uploadImFile'; // 确保路径正确
-
-//  // 假设您有一个文件输入元素，用户从中选择了一个文件
-//  const fileInput = document.getElementById('fileInput');
-//  const file = fileInput.files[0];
-//  const token = '您的认证令牌';
-
-//  // 使用 uploadIm 函数
-//  uploadIm(file, token)
-//    .then(data => {
-//      console.log('图片上传成功:', data);
-//    })
-//    .catch(error => {
-//      console.error('图片上传失败:', error);
-//    });
+// upLoad(filePath, token)
+//     .then(data => {
+//         console.log('上传成功:', JSON.stringify(data));
+//     })
+//     .catch(error => {
+//         console.log('上传失败:', error);
+//     });
 
 
 /**
@@ -59,39 +57,34 @@ export function uploadIm(file, token) {
  * @param {string} sourceName 资源名称
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
  */
+
+// 封装readRes函数，用于获取资源
 export function readRes(sourceName) {
-  const config = {
+  var config = {
     method: 'get',
-    url: `http://localhost:7071/work/file/getResource?sourceName=${sourceName}`,
-    headers: {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    }
+    url: `/work/file/getResource?sourceName=${sourceName}`,
+
   };
 
   return axios(config)
     .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      return response.data; // 返回响应数据
+      // 处理成功的响应
+      return response.data;
     })
     .catch(function (error) {
+      // 处理错误情况
       console.error(error);
-      throw error; // 抛出错误，以便调用者可以处理
+      throw error; // 将错误抛出，以便调用者可以进一步处理
     });
 }
-// 使用指南
-// 导入函数：
-// 在其他文件中，您可以导入 readRes 函数并使用它：
 
-// javascript
-// import { readRes } from './path/to/your/readResFile'; // 确保路径正确
-
-// // 使用 readRes 函数
-// readRes('exampleResourceName')
+// // 使用readRes函数
+// readRes('your-source-name')
 //   .then(data => {
-//     console.log('Resource data:', data);
+//     console.log(JSON.stringify(data));
 //   })
 //   .catch(error => {
-//     console.error('Failed to retrieve resource:', error);
+//     console.error('Failed to read resource:', error);
 //   });
 
 
@@ -102,16 +95,13 @@ export function readRes(sourceName) {
  * @param {File} file 要上传的文件对象
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
  */
-export function upLoad(file) {
+export function admiUpLoad(file) {
   const formData = new FormData();
   formData.append('file', file);
 
   const config = {
     method: 'post',
-    url: `http://localhost:7071/work/admin/file/uploadImage`,
-    headers: {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    }
+    url: `/work/admin/file/uploadImage`,
   };
 
   // 注意：Axios 会自动将 FormData 转换为正确的格式，并设置适当的 headers
@@ -158,10 +148,8 @@ export function upLoad(file) {
 export function readResources(sourceName) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/file/getResource?sourceName=${sourceName}`,
-    headers: {
-      'User-Agent': ''
-    }
+    url: `/work/admin/file/getResource?sourceName=${sourceName}`,
+
   };
 
   return axios(config)

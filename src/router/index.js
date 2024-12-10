@@ -4,6 +4,7 @@ import adClazzify from '@/view/admin/adClazzify.vue'; // 确保路径正确
 import adLogin from '@/view/admin/adLogin.vue'
 import userLogin  from '@/view/user/userLogin.vue';
 import userInfo from '@/view/user/userInfo.vue';
+// import userProfile from '@/view/user/userProfile.vue';
 
 // 定义路由
 const routes = [
@@ -25,7 +26,12 @@ const routes = [
     path:'/userInfo',
     name:'userInfo',
     component:userInfo,
-  },
+   },
+  //  {
+  //   path:'/userProfile',
+  //   name:'userProfile',
+  //   component:userProfile,
+  // },
   // ...其他路由
 ];
 
