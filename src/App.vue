@@ -1,12 +1,23 @@
 <template>
   <div id="app">
-    <router-view />
+    <HeaderIndex />
+    <div class="content bg-white">
+      <router-view></router-view>
+    </div>
+    <FooterIndex/>
   </div>
 </template>
 
 <script >
+import FooterIndex from './components/FooterIndex.vue';
+import HeaderIndex from './components/HeaderIndex.vue';
+
   export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    HeaderIndex,
+    FooterIndex
+  }
 }
 </script>
 
