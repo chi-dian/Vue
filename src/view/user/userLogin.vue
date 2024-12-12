@@ -11,7 +11,7 @@
       <!-- 登录表单 -->
       <el-form ref="userFormRef" :model="userForm" label-width="120px" v-show="isLogin">
         <el-form-item label="账号">
-          <el-input v-model="userForm.username" placeholder="请输入账号"></el-input>
+          <el-input v-model="userForm.email" placeholder="请输入账号"></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input type="password" v-model="userForm.password" placeholder="请输入密码"></el-input>
@@ -105,7 +105,8 @@ const submitForm = async () => {
       const response = await login(userForm.username, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('登录成功');
       router.push('userInfo')
-      return response.data
+      console.log(response.data);
+
 
       // 处理登录成功的逻辑，例如跳转到主页
     } catch (error) {
@@ -118,13 +119,14 @@ const submitForm = async () => {
       }
     // 注册逻辑
     try {
-      const response = await register(userForm.us,userForm.email, userForm.password, userForm.checkCodeKey, userForm.captcha);
+      console.log(userForm);
+      const response = await register(userForm.username,userForm.email, userForm.password, userForm.checkCodeKey, userForm.captcha);
       ElMessage.success('注册成功');
       let result = response.data;
       if(result.status=="error"){
         ElMessage.error(result.info+result.data);
       }
-      return result
+
       // 处理注册成功的逻辑，例如跳转到登录页面
     } catch (error) {
       responseMessage.value = error.message || '注册失败';
