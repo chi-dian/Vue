@@ -27,14 +27,10 @@
           <el-input size="large" type="password" v-model="form.password" placeholder="请输入用户密码" :prefix-icon="Lock" clearable />
         </el-form-item>
         <el-form-item >
-            <el-input
-              size="large"
-              v-model="form.captcha"
-              placeholder="请输入验证码"
-              :prefix-icon="CreditCard"
-              clearable
-            />
-            <img :src="captchaCode" class="captcha-image" alt="验证码" @click="getCaptcha" />
+          <el-input v-model="form.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
+          <!-- 显示获取到的验证码图片 -->
+          <img :src="imageData" alt="验证码" @click="getCaptcha" style="cursor: pointer;"/>
+          <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
           </el-form-item>
         <el-form-item>
           <el-button class="w-full mt-2" size="large" type="primary" @click="onSubmit">登录</el-button>
@@ -46,9 +42,9 @@
 </template>
 
 <script setup>
-import { User, Lock, Message, CreditCard } from '@element-plus/icons-vue'
+import { User, Lock, Message} from '@element-plus/icons-vue'
 import { getCode, login } from '@/api/user'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { setToken } from '@/composables/auth'//设置token
@@ -66,23 +62,33 @@ const form = reactive({
   checkCodeKey: ''
  })
  const captchaLoading = ref(false)
-const captchaCode = ref('') // 存储验证码图片的URL
 const formRef = ref(null)//存储表单DOM元素的引用
+const imageData = ref(''); // 存储图像的Base64数据
 
+
+// 获取验证码的方法
 const getCaptcha = async () => {
   try {
-    captchaLoading.value = true
-    const response = await getCode() // 假设后端提供了获取验证码的API
-    form.checkCodeKey = response.data.checkCodeKey
-    captchaCode.value = response.data.captcha // 假设后端返回的验证码图片URL在响应的 captcha 字段
-    ElMessage.success('验证码已发送')
+    captchaLoading.value = true;
+    const response = await getCode(); // 假设后端提供了获取验证码的API
+    form.checkCodeKey = response.data.checkCodeKey;
+    console.log(form.checkCodeKey);
+    const base64Data = response.data.checkCode.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''); // 移除data URL的MIME类型部分
+    imageData.value = `data:image/png;base64,${base64Data}`; // 更新imageData
+
+    ElMessage.success('验证码已发送');
   } catch (error) {
-    ElMessage.error('验证码获取失败')
-    console.error(error)
+    ElMessage.error('验证码获取失败');
+    console.log(error);
   } finally {
-    captchaLoading.value = false
+    captchaLoading.value = false;
   }
-}
+};
+
+// 在组件挂载后获取初始验证码
+onMounted(() => {
+  getCaptcha();
+});
 
 const onSubmit = async () => {
   formRef.value.validate((valid) => {
@@ -90,7 +96,7 @@ const onSubmit = async () => {
       showMessage('表单验证不通过')
       return false
     }
-    login(form.email, form.username, form.password, form.checkCodeKey, form.captcha).then((res) => {
+    login(form.email, form.password, form.checkCodeKey, form.captcha).then((res) => {
       if (res.data.success) {
         showMessage('登录成功')
         setToken(res.data.data.token)//保存token
