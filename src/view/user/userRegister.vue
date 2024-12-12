@@ -38,6 +38,12 @@
               <p v-if="confirmPasswordError" class="text-red-500 text-sm mt-1">密码不匹配</p>
               <p v-if="confirmPasswordValid" class="text-green-500 text-sm mt-1">密码匹配</p>
           </div>
+          <div class="getCap">
+            <el-input v-model="captcha" aria-placeholder="请输入验证码" style="width: 200px;"></el-input>
+            <!-- 显示验获取到的验证码图片 -->
+            <img :src="imageData" alt="验证码" @click="getCaptcha" style="cursor: pointer;"/>
+            <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
+          </div>
           <div class="flex items-start mb-5">
               <div class="flex items-center h-5">
                   <input v-model="acceptTerms" id="terms" type="checkbox" value=""
@@ -59,10 +65,13 @@
 </template>
 
 <script setup>
-import { ref,watch } from 'vue'
+import { ref,watch,onMounted } from 'vue'
 import { register } from '@/api/user'
 import { useRouter } from 'vue-router'
 import { showMessage } from '@/utils/util'
+import { getCode } from "@/api/user";
+import { ElMessage } from 'element-plus';
+
 
 const router = useRouter()
 const username = ref('')
@@ -76,6 +85,37 @@ const passwordError = ref(false);
 const passwordValid = ref(false);
 const confirmPasswordError = ref(false);
 const confirmPasswordValid = ref(false);
+const captcha = ref();
+const captchaLoading = ref(false);
+const checkCodeKey = ref();
+const imageData = ref(''); // 存储图像的Base64数据
+
+
+
+
+// 获取验证码的方法
+const getCaptcha = async () => {
+  try {
+    captchaLoading.value = true;
+    const response = await getCode(); // 假设后端提供了获取验证码的API
+    checkCodeKey.value = response.data.checkCodeKey;
+    const base64Data = response.data.checkCode.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''); // 移除data URL的MIME类型部分
+    imageData.value = `data:image/png;base64,${base64Data}`; // 更新imageData
+
+    ElMessage.success('验证码已发送');
+  } catch (error) {
+    ElMessage.error('验证码获取失败');
+    console.log(error);
+  } finally {
+    captchaLoading.value = false;
+  }
+};
+
+// 在组件挂载后获取初始验证码
+onMounted(() => {
+  getCaptcha();
+});
+
 //检查邮箱是否规范
 watch(email, (newVal) => {
       // 检查是否包含'@'，且'@'不在开头或结尾，并且包含'.com'，且'.com'在'@'之后
@@ -117,10 +157,11 @@ const submitForm = async () => {
       return;
   }
   try {
-      await register(email.value,username.value, password.value)
+
+      await register(username.value,email.value, password.value,checkCodeKey.value,captcha.value)
       showMessage("注册成功！")
       return router.push('/login')
-      //eslint-disable-next-line
+      // eslint-disable-next-line
   } catch (error) {
       showMessage("注册失败,请重试！")
   }
