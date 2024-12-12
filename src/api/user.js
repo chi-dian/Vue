@@ -30,15 +30,13 @@ export function register(nickName, email, registerPassword, checkCodeKey, checkC
 
   };
 
-  console.log(config)
-  return axios(config)
+  console.log(config);
+  axios(config)
     .then(function (response) {
       console.log(JSON.stringify(response.data));
-      return response.data; // 返回响应数据，方便调用者进一步处理
     })
     .catch(function (error) {
       console.log(error);
-      throw error; // 将错误抛出，方便调用者进一步处理
     });
 }
 
