@@ -191,6 +191,8 @@ export function updateUser(nickName, avatar, sex, birthday, school, personIntrod
     url: `/work/account/updateUserInfo?nickName=${encodeURIComponent(nickName)}&avatar=${encodeURIComponent(avatar)}&sex=${encodeURIComponent(sex)}&birthday=${encodeURIComponent(birthday)}&school=${encodeURIComponent(school)}&personIntroduction=${encodeURIComponent(personIntroduction)}&noticeInfo=${encodeURIComponent(noticeInfo)}`,
 
   };
+  console.log(config);
+
 
   return axios(config)
     .then(function (response) {

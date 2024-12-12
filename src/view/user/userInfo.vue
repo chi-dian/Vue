@@ -153,21 +153,38 @@ const fetchAvatar = async () => {
 
 const handleAvatarChange = (file) => {
   if (file) {
+    // try{
+    console.log(file);
+
     userUpLoad(file.raw).then(response => {
       if (response.status === 'success') {
         userInfo.value.avatar = response.data;
         form.value.avatar = response.data;
         console.log(response.data);
 
+
         ElMessage.success('头像上传成功');
       } else {
         ElMessage.error('头像上传失败');
+        console.log(response);
       }
     }).catch(error => {
       ElMessage.error('头像上传失败: ' + error);
     });
-    console.log(userInfo.value.avatar);
 
+
+    console.log(userInfo.value.avatar);
+  //   userUpLoad(file)
+  //     .then(data => {
+  //       form.value.avatar=data;
+  //       userInfo.value.avatar=data;
+  //       console.log( data);
+  //       console.log('文件上传成功，服务器返回数据：',data);
+  //     })
+
+  // } catch (error) {
+  //   ElMessage.error('头像上传失败: ' + error);
+  //   }
   }
 };
 
@@ -196,15 +213,14 @@ const uploadFile = async (file) => {
 };
 
 const handleUpdateUserInfo = async () => {
-  console.log(form.value.avatar);
+  console.log(form.value);
 
   try {
     await updateUser(
       form.value.nickName,
       form.value.avatar,
       form.value.sex.toString(),
-      form.value.birthday,
-      '',
+      "",
       form.value.personIntroduction,
       form.value.noticeInfo
     );
