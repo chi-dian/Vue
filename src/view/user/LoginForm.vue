@@ -97,10 +97,11 @@ const onSubmit = async () => {
       return false
     }
     login(form.email, form.password, form.checkCodeKey, form.captcha).then((res) => {
-      if (res.data.success) {
+      console.log(res);
+      if (res.status=='success') {
         showMessage('登录成功')
-        setToken(res.data.data.token)//保存token
-        userStore.setUserInfo(res.data.data.userInfo)//持久化用户信息
+        setToken(res.data.token)//保存token
+        userStore.setUserInfo(res.data.userInfo)//持久化用户信息
         router.push('/index')
       } else {
         showMessage(res.data.message, 'error')
