@@ -26,14 +26,14 @@
         <el-form-item>
           <el-input size="large" type="password" v-model="form.password" placeholder="请输入用户密码" :prefix-icon="Lock" clearable />
         </el-form-item>
-        <el-form-item >
-          <el-input v-model="form.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
-          <!-- 显示获取到的验证码图片 -->
-          <img :src="imageData" alt="验证码" @click="getCaptcha" style="cursor: pointer;"/>
-          <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
-          </el-form-item>
         <el-form-item>
-          <el-button class="w-full mt-2" size="large" type="primary" @click="onSubmit">登录</el-button>
+  <div class="flex items-center" style="align-items: center;">
+    <el-input size="large" v-model="form.captcha" placeholder="请输入验证码" :prefix-icon="Message" clearable/>
+    <img :src="imageData" alt="验证码" @click="getCaptcha" :loading="captchaLoading" style="cursor: pointer; margin-left: 8px;" />
+  </div>
+    </el-form-item>
+        <el-form-item>
+          <el-button class="w-full mt-2" size="large" type="primary" plain @click="onSubmit">登录</el-button>
         </el-form-item>
       </el-form>
           </div>
@@ -76,7 +76,7 @@ const getCaptcha = async () => {
     const base64Data = response.data.checkCode.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''); // 移除data URL的MIME类型部分
     imageData.value = `data:image/png;base64,${base64Data}`; // 更新imageData
 
-    ElMessage.success('验证码已发送');
+    // ElMessage.success('验证码已发送');
   } catch (error) {
     ElMessage.error('验证码获取失败');
     console.log(error);

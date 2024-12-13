@@ -38,28 +38,40 @@
               <p v-if="confirmPasswordError" class="text-red-500 text-sm mt-1">密码不匹配</p>
               <p v-if="confirmPasswordValid" class="text-green-500 text-sm mt-1">密码匹配</p>
           </div>
-          <div class="getCap">
-            <el-input v-model="captcha" aria-placeholder="请输入验证码" style="width: 200px;"></el-input>
-            <!-- 显示验获取到的验证码图片 -->
-            <img :src="imageData" alt="验证码" @click="getCaptcha" style="cursor: pointer;"/>
-            <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
+          <div class="mb-5">
+        <label for="captcha" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">验证码</label>
+        <div class="captcha-container">
+          <input v-model="captcha"
+            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+             required>
+          <img :src="imageData" alt="验证码" @click="getCaptcha" :loading="captchaLoading" style="cursor: pointer;"/>
+        </div>
+      </div>
+      <div class="mb-5">
+        <div class="flex items-start mb-5">
+          <div class="flex items-center h-5">
+            <input v-model="acceptTerms" id="terms" type="checkbox" value=""
+              class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+              required>
           </div>
-          <div class="flex items-start mb-5">
-              <div class="flex items-center h-5">
-                  <input v-model="acceptTerms" id="terms" type="checkbox" value=""
-                      class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                      required>
-              </div>
-              <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">阅读并接受
-                  <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">用户协议</a>
-                  <span>&nbsp;和&nbsp;</span>
-                  <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">隐私政策</a>
-              </label>
-          </div>
-          <button type="submit"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300
-              font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
-              dark:focus:ring-blue-800">注册</button>
+          <label for="terms" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+            阅读并接受
+            <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">用户协议</a>
+            <span>&nbsp;和&nbsp;</span>
+            <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">隐私政策</a>
+          </label>
+        </div>
+      </div>
+      <div class="mb-5">
+        <div class="flex items-start justify-center mb-5">
+        <button type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300
+          font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700
+          dark:focus:ring-blue-800">
+          注册
+        </button>
+      </div>
+      </div>
       </form>
   </div>
 </template>
@@ -102,7 +114,7 @@ const getCaptcha = async () => {
     const base64Data = response.data.checkCode.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''); // 移除data URL的MIME类型部分
     imageData.value = `data:image/png;base64,${base64Data}`; // 更新imageData
 
-    ElMessage.success('验证码已发送');
+    // ElMessage.success('验证码已发送');
   } catch (error) {
     ElMessage.error('验证码获取失败');
     console.log(error);
@@ -175,4 +187,9 @@ const submitForm = async () => {
   justify-content: center;
   align-items: center;
 } */
+.captcha-container {
+  display: flex;
+  align-items: center; /* 垂直居中对齐 */
+  gap: 8px; /* 设置组件之间的间距 */
+}
 </style>
