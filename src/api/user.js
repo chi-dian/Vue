@@ -337,3 +337,31 @@ export function quitLogin() {
 //   .catch(error => {
 //     console.error('退出登录失败:', error);
 //   });
+
+
+/**
+ * 更改用户状态的函数
+ * @param {string} userId - 用户ID
+ * @param {string} status - 新的状态值
+ */
+export function changeStatus(userId, status) {
+  var config = {
+    method: 'get',
+    url: `http://localhost:7071/work/admin/account/userStatus?userId=${userId}&status=${status}`,
+    headers: {
+      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+    }
+  };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      return response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+// 使用示例：
+// changeStatus('12345', 'active');

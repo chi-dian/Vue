@@ -9,6 +9,12 @@ import LoginForm from '@/view/user/LoginForm.vue';
 import IndexForm from '@/view/user/IndexForm.vue';
 import ProductDetails from '@/components/ProductDetails.vue';
 import UserCart from '@/view/user/UserCart.vue';
+import adminApp from '@/view/admin/adminApp.vue';
+import userManagement from '@/view/admin/userManagement.vue';
+import fileManagement from '@/view/admin/fileManagement.vue';
+import productManagemnet from '@/view/admin/productManagemnet.vue';
+import brandManagement from '@/view/admin/brandManagement.vue';
+import categoryManager from '@/view/admin/categoryManager.vue';
 // 定义路由
 const routes = [
   {
@@ -54,7 +60,41 @@ const routes = [
   {
     path:'/cart',
     component:UserCart
-  }
+  },
+  {
+    path:'/admin',
+    name:'admin',
+    component:adminApp,
+    children:[
+      {
+        path:'',
+        component:userManagement
+      },
+      {
+        path: 'users',
+        component: userManagement
+      },
+      {
+        path: 'files',
+        component: fileManagement
+      },
+      {
+        path: 'products',
+        component: productManagemnet
+      },
+      {
+        path: 'brands',
+        component: brandManagement
+      },
+      {
+        path: 'category',
+        name: 'category',
+        component:categoryManager
+      }
+    ]
+  },
+
+
   // ...其他路由
 ];
 
