@@ -347,10 +347,8 @@ export function quitLogin() {
 export function changeStatus(userId, status) {
   var config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/account/userStatus?userId=${userId}&status=${status}`,
-    headers: {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    }
+    url: `/work/admin/account/userStatus?userId=${userId}&status=${status}`,
+
   };
 
   axios(config)
@@ -365,3 +363,25 @@ export function changeStatus(userId, status) {
 
 // 使用示例：
 // changeStatus('12345', 'active');
+
+
+
+
+export function loadUserInfo(pageNo, pageSize, orderBy, direction) {
+  var config = {
+    method: 'get',
+    url: `/work/admin/account/loadUserInfo?pageNo=${pageNo}&pageSize=${pageSize}&orderBy=${orderBy}&direction=${direction}`,
+    
+  };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+// 使用示例
+// loadUserInfo(1, 10, 'name', 'asc');

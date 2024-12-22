@@ -11,7 +11,6 @@ import ProductDetails from '@/components/ProductDetails.vue';
 import UserCart from '@/view/user/UserCart.vue';
 import adminApp from '@/view/admin/adminApp.vue';
 import userManagement from '@/view/admin/userManagement.vue';
-import fileManagement from '@/view/admin/fileManagement.vue';
 import productManagemnet from '@/view/admin/productManagemnet.vue';
 import brandManagement from '@/view/admin/brandManagement.vue';
 import categoryManager from '@/view/admin/categoryManager.vue';
@@ -73,10 +72,6 @@ const routes = [
       {
         path: 'users',
         component: userManagement
-      },
-      {
-        path: 'files',
-        component: fileManagement
       },
       {
         path: 'products',

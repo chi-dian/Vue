@@ -10,9 +10,6 @@
           <el-menu-item index="/users">
             <router-link to="/admin/users">用户管理</router-link>
           </el-menu-item>
-          <el-menu-item index="/files">
-            <router-link to="/admin/files">文件管理</router-link>
-          </el-menu-item>
           <el-menu-item index="/products">
             <router-link to="/admin/products">商品管理</router-link>
           </el-menu-item>
