@@ -6,7 +6,8 @@
           <span>管理员登录页面</span>
         </div>
       </template>
-      <el-form ref="loginForm" :model="loginForm" label-width="120px">
+      <el-form :model="loginForm" label-width="120px">
+        <!-- 注意这里移除了 ref="loginForm" -->
         <el-form-item label="账号">
           <el-input v-model="loginForm.username" placeholder="请输入管理员账号"></el-input>
         </el-form-item>
@@ -15,6 +16,7 @@
         </el-form-item>
         <el-form-item label="验证码">
           <el-input v-model="loginForm.captcha" placeholder="请输入验证码" style="width: 200px;"></el-input>
+          <img :src="imageData" alt="验证码" @click="getCaptcha" :loading="captchaLoading" style="cursor: pointer; margin-left: 8px;" />
           <el-button @click="getCaptcha" :loading="captchaLoading">获取验证码</el-button>
         </el-form-item>
       </el-form>
@@ -26,52 +28,61 @@
   </div>
 </template>
 
-<script>
-import { userLogin, useCode } from '@/api/user'; // 确保路径正确
 
-export default {
-  name: 'AdminLogin',
-  data() {
-    return {
-      loginForm: {
-        username: '',
-        password: '',
-        captcha: '',
-        checkCodeKey: '' // 验证码密钥
-      },
-      responseMessage: '',
-      captchaLoading: false
-    };
-  },
-  methods: {
-    // 获取验证码的方法
-    getCaptcha() {
-      // 这里应该是调用后端接口获取验证码的逻辑
-      useCode()
-        .then(data => {
-          this.loginForm.checkCodeKey = data.checkCodeKey; // 假设后端返回了验证码密钥
-          this.responseMessage = '验证码已发送';
-        })
-        .catch(error => {
-          this.responseMessage = '验证码获取失败';
-          console.log(error);
+<script setup>
+import { ref, reactive, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import { userLogin, getCode } from '@/api/user'; // 确保路径正确
+import {  useRouter } from 'vue-router'
 
-        });
-    },
-    // 提交表单的方法
-    submitForm() {
-      this.responseMessage = '';
-      userLogin(this.loginForm.username, this.loginForm.password, this.loginForm.checkCodeKey, this.loginForm.captcha)
-        .then(data => {
-          this.responseMessage = '登录成功';
-          // 这里可以进行跳转或其他逻辑处理
-          console.log(data);
+const loginForm = reactive({
+  username: '',
+  password: '',
+  captcha: '',
+  checkCodeKey: '' // 验证码密钥
+});
+const responseMessage = ref('');
+const captchaLoading = ref(false);
+const imageData = ref(''); // 存储图像的Base64数据
+const router = useRouter();
 
-        })
-        .catch(error => {
-          this.responseMessage = '登录失败: ' + error.message;
-        });
+// 获取验证码的方法
+const getCaptcha = async () => {
+  try {
+    captchaLoading.value = true;
+    const response = await getCode(); // 假设后端提供了获取验证码的API
+    if (response && response.data && response.data.checkCode && response.data.checkCodeKey) {
+      loginForm.checkCodeKey = response.data.checkCodeKey;
+      const base64Data = response.data.checkCode.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''); // 移除data URL的MIME类型部分
+      imageData.value = `data:image/png;base64,${base64Data}`; // 更新imageData
+      ElMessage.success('验证码已发送');
+    } else {
+      ElMessage.error('验证码获取失败');
     }
+  } catch (error) {
+    ElMessage.error('验证码获取失败');
+    console.log(error);
+  } finally {
+    captchaLoading.value = false;
+  }
+};
+
+// 在组件挂载后获取初始验证码
+onMounted(() => {
+  getCaptcha();
+});
+
+// 提交表单的方法
+async function submitForm() {
+  responseMessage.value = '';
+  try {
+    const data = await userLogin(loginForm.username, loginForm.password, loginForm.checkCodeKey, loginForm.captcha);
+    responseMessage.value = '登录成功';
+    // 这里可以进行跳转或其他逻辑处理
+    router.push('/admin')
+    console.log(data);
+  } catch (error) {
+    responseMessage.value = '登录失败: ' + error.message;
   }
 }
 </script>

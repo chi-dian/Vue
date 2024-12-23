@@ -35,6 +35,9 @@
         <el-form-item>
           <el-button class="w-full mt-2" size="large" type="primary" plain @click="onSubmit">登录</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button type="primary" text bg @click="$router.push('/adLogin')" >管理员登录</el-button>
+        </el-form-item>
       </el-form>
           </div>
     </div>

@@ -93,6 +93,7 @@ const routes = [
     children:[
       {
         path:'',
+        name:'userManagement',
         component:userManagement
       },
       {
