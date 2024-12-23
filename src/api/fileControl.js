@@ -7,20 +7,17 @@ import FormData from 'form-data';
  * @param {string} token 认证令牌
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
  */
-export function uploadIm(file, token) {
+export function uploadIm(file) {
   var formData = new FormData();
   formData.append('file', file);
 
   var config = {
     method: 'post',
-    url: `http://localhost:7071/work/file/uploadImage?file=${file.name}`,
-    headers: {
-      'token': token,
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-      ...formData.getHeaders()
-    },
+    url: `/work/file/uploadImage?file=${file.name}`,
+
     data: formData
   };
+
 
   return axios(config)
     .then(function (response) {
@@ -62,10 +59,8 @@ export function uploadIm(file, token) {
 export function readRes(sourceName) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/file/getResource?sourceName=${sourceName}`,
-    headers: {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    }
+    url: `/work/file/getResource?sourceName=${sourceName}`,
+
   };
 
   return axios(config)
@@ -108,10 +103,8 @@ export function upLoad(file) {
 
   const config = {
     method: 'post',
-    url: `http://localhost:7071/work/admin/file/uploadImage`,
-    headers: {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    }
+    url: `/work/admin/file/uploadImage`,
+
   };
 
   // 注意：Axios 会自动将 FormData 转换为正确的格式，并设置适当的 headers
@@ -158,7 +151,7 @@ export function upLoad(file) {
 export function readResources(sourceName) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/file/getResource?sourceName=${sourceName}`,
+    url: `/work/admin/file/getResource?sourceName=${sourceName}`,
     headers: {
       'User-Agent': ''
     }

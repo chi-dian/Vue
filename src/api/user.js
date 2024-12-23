@@ -337,3 +337,51 @@ export function quitLogin() {
 //   .catch(error => {
 //     console.error('退出登录失败:', error);
 //   });
+
+
+/**
+ * 更改用户状态的函数
+ * @param {string} userId - 用户ID
+ * @param {string} status - 新的状态值
+ */
+export function changeStatus(userId, status) {
+  var config = {
+    method: 'get',
+    url: `/work/admin/account/userStatus?userId=${userId}&status=${status}`,
+
+  };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      return response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+// 使用示例：
+// changeStatus('12345', 'active');
+
+
+
+
+export function loadUserInfo(pageNo, pageSize, orderBy, direction) {
+  var config = {
+    method: 'get',
+    url: `/work/admin/account/loadUserInfo?pageNo=${pageNo}&pageSize=${pageSize}&orderBy=${orderBy}&direction=${direction}`,
+    
+  };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+// 使用示例
+// loadUserInfo(1, 10, 'name', 'asc');

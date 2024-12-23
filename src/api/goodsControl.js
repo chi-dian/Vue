@@ -138,7 +138,7 @@ export function getInfo(productId) {
 export function delGoods(productId) {
   const config = {
     method: 'delete', // 注意这里应该是delete方法
-    url: `http://localhost:7071/work/product/deleteProduct/${productId}`, // URL应该是RESTful风格的
+    url: `/work/product/deleteProduct/${productId}`, // URL应该是RESTful风格的
     headers: {
       'User-Agent': ''
     }
@@ -180,7 +180,7 @@ export function delGoods(productId) {
 export function reviseGoods(params) {
   const config = {
     method: 'post',
-    url: `http://localhost:7071/work/product/postProductByProductId?productId=${params.productId}&productName=${params.productName}&productDescription=${params.productDescription}&pCategoryId=${params.pCategoryId}&brandId=${params.brandId}&price=${params.price}&stock=${params.stock}&imageUrl=${params.imageUrl}&tags=${params.tags}`,
+    url: `/work/product/postProductByProductId?productId=${params.productId}&productName=${params.productName}&productDescription=${params.productDescription}&pCategoryId=${params.pCategoryId}&brandId=${params.brandId}&price=${params.price}&stock=${params.stock}&imageUrl=${params.imageUrl}&tags=${params.tags}`,
     headers: {
       'User-Agent': ''
     }
@@ -232,10 +232,8 @@ export function reviseGoods(params) {
 export function scoreGoods(productId, rate) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/product/rate?productId=${productId}&rate=${rate}`,
-    headers: {
-      'User-Agent': ''
-    }
+    url: `/work/product/rate?productId=${productId}&rate=${rate}`,
+
   };
 
   return axios(config)
@@ -273,7 +271,7 @@ export function scoreGoods(productId, rate) {
 export function idGetGoods(pageNo, pCategoryId) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/product/loadProductsByCid?pageNo=${pageNo}&pCategoryId=${pCategoryId}`,
+    url: `/work/product/loadProductsByCid?pageNo=${pageNo}&pCategoryId=${pCategoryId}`,
     headers: {
       'User-Agent': ''
     }
@@ -316,7 +314,7 @@ export function idGetGoods(pageNo, pCategoryId) {
 export function auditGoods(productId, status) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/product/audit?productId=${productId}&status=${status}`,
+    url: `/work/admin/product/audit?productId=${productId}&status=${status}`,
     headers: {
       'User-Agent': ''
     }
@@ -346,4 +344,75 @@ export function auditGoods(productId, status) {
 //   })
 //   .catch(error => {
 //     console.error('商品审核失败:', error);
+//   });
+
+
+
+/**
+ * 推荐商品的函数
+ * @param {string} productId - 商品ID
+ * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
+ */
+export function recommendGoods(productId) {
+  var config = {
+    method: 'get',
+    url: `/work/admin/product/RecommendProduct?productId=${productId}`,
+
+  };
+
+  return axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      return response.data; // 返回响应数据
+    })
+    .catch(function (error) {
+      console.log(error);
+      throw error; // 抛出错误，以便调用者可以处理
+    });
+}
+
+// 使用示例：
+// recommendGoods('123')
+//   .then(data => {
+//     console.log('商品推荐成功:', data);
+//   })
+//   .catch(error => {
+//     console.error('商品推荐失败:', error);
+//   });
+
+
+
+
+/**
+ * 取消推荐商品的函数
+ * @param {string} productId - 商品ID
+ * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
+ */
+export function unrecommendGoods(productId) {
+  var config = {
+    method: 'get',
+    url: `http://localhost:7071/work/admin/product/CancelRecommendProduct?productId=${productId}`,
+    headers: {
+      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+    }
+  };
+
+  return axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      return response.data; // 返回响应数据
+    })
+    .catch(function (error) {
+      console.log(error);
+      throw error; // 抛出错误，以便调用者可以处理
+    });
+}
+
+// 使用示例：
+// unrecommendGoods('123')
+//   .then(data => {
+//     console.log('商品取消推荐成功:', data);
+//   })
+//   .catch(error => {
+//     console.error('商品取消推荐失败:', error);
 //   });

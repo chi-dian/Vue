@@ -1,7 +1,6 @@
 <template>
   <div class="user-profile">
     <el-card>
-      <!-- 使用 v-slot 指令替代 slot 属性 -->
       <template v-slot:header>
         <div class="clearfix">
           <span>用户信息</span>
@@ -40,6 +39,7 @@
         </el-form-item>
         <el-form-item label="头像" :label-width="formLabelWidth">
           <el-input v-model="form.avatar" autocomplete="off"></el-input>
+          <input type="file" @change="handleAvatarChange" />
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth">
           <el-radio-group v-model="form.sex">
@@ -51,21 +51,12 @@
           <el-date-picker v-model="form.birthday" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="个人简介" :label-width="formLabelWidth">
-          <el-input
-            type="textarea"
-            v-model="form.personIntroduction"
-            autocomplete="off">
-          </el-input>
+          <el-input type="textarea" v-model="form.personIntroduction" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="通知信息" :label-width="formLabelWidth">
-          <el-input
-            type="textarea"
-            v-model="form.noticeInfo"
-            autocomplete="off">
-          </el-input>
+          <el-input type="textarea" v-model="form.noticeInfo" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
-      <!-- 使用 v-slot 指令替代 slot 属性 -->
       <template v-slot:footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -79,7 +70,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { obUserInfo, logOut, updateUser } from '@/api/user'; // 确保路径正确
+import { obUserInfo, logOut, updateUser } from '@/api/user';
+import { uploadIm } from '@/api/fileControl'; // 确保路径正确
 
 const formLabelWidth = '120px';
 const dialogFormVisible = ref(false);
@@ -104,6 +96,21 @@ const fetchUserInfo = async () => {
     }
   } catch (error) {
     console.error('Failed to fetch user data:', error);
+  }
+};
+
+const handleAvatarChange = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    try {
+      const result = await uploadIm(file);
+      if (result && result.url) {
+        form.value.avatar = result.url; // 更新头像URL
+        userInfo.value.avatar = result.url; // 立即显示新头像
+      }
+    } catch (error) {
+      console.error('Failed to upload avatar:', error);
+    }
   }
 };
 
@@ -134,7 +141,6 @@ const handleLogOut = async () => {
   }
 };
 
-// Fetch user info when component is mounted
 fetchUserInfo();
 </script>
 

@@ -5,10 +5,8 @@ import axios from 'axios';
 const loadCategory = (pageNo) => {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/category/loadCategory?pageNo=${pageNo}`,
-    headers: {
-      'User-Agent': ''
-    }
+    url: `/work/category/loadCategory?pageNo=${pageNo}`,
+
   };
 
   return axios(config)
@@ -36,14 +34,11 @@ export default loadCategory;
  * @param {string} adminToken 管理员令牌
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
  */
-export function addClazz(pCategoryId, categoryCode, categoryName, categoryId, icon, background, adminToken) {
+export function addClazz(pCategoryId, categoryCode, categoryName, categoryId, icon, background) {
   const config = {
     method: 'post',
-    url: `http://localhost:7071/work/admin/category/saveCategory?pCategoryId=${pCategoryId}&categoryCode=${categoryCode}&categoryName=${categoryName}&categoryId=${categoryId}&icon=${icon}&background=${background}`,
-    headers: {
-      'adminToken': adminToken,
-      'User-Agent': ''
-    }
+    url: `/work/admin/category/saveCategory?pCategoryId=${pCategoryId}&categoryCode=${categoryCode}&categoryName=${categoryName}&categoryId=${categoryId}&icon=${icon}&background=${background}`,
+
   };
 
   return axios(config)
@@ -80,14 +75,11 @@ export function addClazz(pCategoryId, categoryCode, categoryName, categoryId, ic
  * @param {string} adminToken 管理员令牌
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
  */
-export function delClazz(categoryId, adminToken) {
+export function delClazz(categoryId) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/category/delCategory?categoryId=${categoryId}`,
-    headers: {
-      'adminToken': adminToken,
-      'User-Agent': ''
-    }
+    url: `/work/admin/category/delCategory?categoryId=${categoryId}`,
+
   };
 
   return axios(config)
@@ -123,14 +115,11 @@ export function delClazz(categoryId, adminToken) {
  * @param {string} adminToken 管理员令牌
  * @returns {Promise} Axios Promise 对象，包含响应数据或错误信息
  */
-export function showClazz(pageNo, adminToken) {
+export function showClazz(pageNo) {
   const config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/category/loadCategory?pageNo=${pageNo}`,
-    headers: {
-      'adminToken': adminToken,
-      'User-Agent': ''
-    }
+    url: `/work/admin/category/loadCategory?pageNo=${pageNo}`,
+
   };
 
   return axios(config)
