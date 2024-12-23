@@ -66,8 +66,8 @@ const routes = [
     component:LoginForm
   },
   {
-    path: '/detail/:productId',
-    name: 'detail',
+    path: '/product/:id',
+    name: 'ProductDetails',
     component:ProductDetails
   },
   {
