@@ -26,18 +26,14 @@
 
 <script setup>
 import { ref } from 'vue'
-import bg1 from '../assets/img/bg.jpg'
-import logo from '../assets/img/LOGO.png'
-
+import s1 from '@/assets/img/swiper1.jpg';
+import s4 from '@/assets/img/swiper4.jpg';
 const carousel = ref(null)
 const currentIndex = ref(0)
 
 // 导入图片文件
 const images = ref([
-  bg1,
-  logo,
-  bg1,
-  bg1
+  s1,s4,s1,s4
 ])
 
 // 轮播图自动切换，赋值为自定义指示器
