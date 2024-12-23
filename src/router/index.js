@@ -14,6 +14,15 @@ import userManagement from '@/view/admin/userManagement.vue';
 import productManagemnet from '@/view/admin/productManagemnet.vue';
 import brandManagement from '@/view/admin/brandManagement.vue';
 import categoryManager from '@/view/admin/categoryManager.vue';
+import FeedBack from '@/view/user/FeedBack.vue';
+import SellItem from '@/view/user/SellItem.vue';
+import CheckOut from '@/view/user/CheckOut.vue';
+import ProductCategory from '@/view/user/ProductCategory.vue';
+import UserCenter from '@/view/user/userCenter.vue';
+import UserProducts from '../components/UserProducts.vue';
+import UserOrders from '../components/UserOrders.vue';
+import UserSales from '../components/UserSales.vue';
+import UserProfile from '../components/UserProfile.vue';
 // 定义路由
 const routes = [
   {
@@ -23,6 +32,11 @@ const routes = [
   {
     path:'/index',
     component:IndexForm
+  },
+  {
+    path: '/feedback',
+    name:'feedback',
+    component: FeedBack
   },
   {
     path: '/test',
@@ -61,6 +75,18 @@ const routes = [
     component:UserCart
   },
   {
+    path:'/sell',
+    component:SellItem
+  },
+  {
+    path:'/checkout',
+    component:CheckOut
+  },
+  {
+    path:'/category',
+    component:ProductCategory
+  },
+  {
     path:'/admin',
     name:'admin',
     component:adminApp,
@@ -88,9 +114,34 @@ const routes = [
       }
     ]
   },
-
-
-  // ...其他路由
+  {
+    path: '/user',
+    component: UserCenter,
+    redirect: '/user/profile',
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'products',
+        name: 'UserProducts',
+        component:UserProducts
+      },
+      {
+        path: 'orders',
+        name: 'UserOrders',
+        component: UserOrders
+      },
+      {
+        path: 'sales',
+        name: 'UserSales',
+        component:UserSales
+      },
+      {
+        path: 'profile',
+        name: 'UserProfile',
+        component:UserProfile
+      }
+    ]
+  },
 ];
 
 // 创建路由实例

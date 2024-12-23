@@ -21,12 +21,6 @@
                           md:dark:hover:bg-transparent dark:border-gray-700">分类</router-link>
                   </li>
                   <li>
-                    <router-link to="/forum"
-                          class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700
-                          md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white
-                          md:dark:hover:bg-transparent dark:border-gray-700">论坛</router-link>
-                  </li>
-                  <li>
                       <router-link to="/feedback"
                           class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700
                           md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white
@@ -41,124 +35,123 @@
                       class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                   <div class="relative">
                       <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400"
                               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                           </svg>
                       </div>
-                      <input type="search" id="default-search"
+                      <input type="search" id="default-search" v-model="searchQuery" @keyup.enter="handleSearch"
                           class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           placeholder="搜索你想要的内容吧~" required>
-                      <button type="submit"
+                      <button type="submit" @click="handleSearch"
                           class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">搜索</button>
                   </div>
               </form>
           </div>
           <!-- 购物车，判断登录状态-->
           <div class="flex items-center md:order-3">
+            <el-badge
+                  :value="cartItemCount"
+                  :hidden="cartItemCount === 0"
+                  class="cart-badge"
+                  >
               <el-button type="info" text @click="toCart()"><el-icon><ShoppingCart /></el-icon></el-button>
+            </el-badge>
+            </div>
+          <!-- 卖闲置 -->
+          <div class="flex items-center md:order-3">
+
+              <el-button type="info" text @click="toSellItems()"><el-icon><Camera /></el-icon></el-button>
+
           </div>
           <div class="flex items-center md:order-4">
               <!-- 登录 -->
-              <div v-if="!isLogined" class="text-gray-900  mr-1 hover:text-blue-700" >
-                  <el-button type="primary" text bg @click="$router.push('/login')">登录</el-button>
-                  <el-button type="primary" text bg @click="$router.push('/register')">注册</el-button>
-                  </div>
-            <div class="ml-5">
-                    <!-- <el-dropdown v-if="isLogined" class="flex items-center justify-center" @command="handleCommand"> -->
-                <el-dropdown  class="flex items-center justify-centerr" @command="handleCommand">
+              <el-dropdown v-if="currentUser" class="flex items-center justify-center" @command="handleCommand">
                 <span class="el-dropdown-link flex items-center justify-center text-gray-700 text-xs">
         <!-- 头像 Avatar -->
-                <el-avatar class="mr-2" :size="25" src="https://newonebucket.oss-cn-hongkong.aliyuncs.com/mall/touxiang.png" />
+                <el-avatar class="mr-2" :size="25" :src="currentUser.avatar" />
                  <!-- 显示用户姓名 -->
-                {{ userStore.userInfo.username }}
-        <el-icon class="el-icon--right">
-          <arrow-down />
-        </el-icon>
-      </span>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <!-- 跳转界面 -->
-          <el-dropdown-item command="Ofme">个人中心</el-dropdown-item>
-          <el-dropdown-item command="updatePassword">修改密码</el-dropdown-item>
-          <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
+                {{ currentUser.username }}
+               <el-icon class="el-icon--right">
+                <arrow-down />
+                </el-icon>
+               </span>
+          <template #dropdown>
+           <el-dropdown-menu>
+            <!-- 跳转界面 -->
+           <el-dropdown-item command="Ofme">个人中心</el-dropdown-item>
+           <el-dropdown-item command="SellItems">想卖闲置</el-dropdown-item>
+           <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
     </el-dropdown>
+           <div v-else class="text-gray-900  mr-1 hover:text-blue-700" >
+           <el-button type="primary" text bg @click="$router.push('/login')">登录</el-button>
+           <el-button type="primary" text bg @click="$router.push('/register')">注册</el-button>
+           </div>
   </div>
-          </div>
-
-      </div>
+  </div>
   </nav>
 </template>
 
 <script setup>
-import { ref,watch } from 'vue'
-import { useUserStore } from '@/stores/user'
-import { useRouter } from 'vue-router'
-import { showModel, showMessage } from '@/utils/util'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
-
-// // 引入了用户 Store
-const userStore = useUserStore()
+const store = useStore()
 const router = useRouter()
+const route = useRoute()
 
-// // 是否登录，通过 userStore 中的 userInfo 对象是否有数据来判断
-// // 获取 userInfo 对象所有属性名称的数组
-const keys = Object.keys(userStore.userInfo)
-// // 若大于零，则表示用户已登录,记录为true
-const isLogined = ref(keys.length > 0)
+const currentUser = computed(() => store.state.currentUser)
 
-// // 监听 userStore.userInfo.username 的变化
-watch(() => userStore.userInfo.username, (newUsername) => {
-//   // 当用户名变化时，执行相应的逻辑
-  isLogined.value = !!newUsername; // 或者使用其他逻辑来判断是否登录
-});
-// // 下拉菜单事件处理
-const handleCommand = (command) => {
-  if(command == 'Ofme'){
-    if(isLogined.value)
-    {router.push('./ofme')}
-  else{
-    showMessage('请先登录！')
-  }
-  }
-//   // 更新密码
-  if (command == 'updatePassword') {
-//       // 调用修改密码API
-  } else if (command == 'logout') { // 退出登录
-    if(isLogined.value)
-    {logout()}
-    else{
-      showMessage('你还未登录~')
-    }
-  }
-}
+const cartItemCount = computed(() => {
+  if (!currentUser.value) return 0
+  return store.getters.cartItemCount(currentUser.value.id)
+})
 
-// // 退出登录
-function logout() {
-  showModel('是否确认要退出登录？').then(() => {
-      userStore.logout()
-      // 标记为未登录
-      isLogined.value = false
-      showMessage('退出登录成功！')
-      // 跳转登录页
-      router.push('/login')
+const searchQuery = ref(route.query.search || '')
+
+const handleSearch = () => {
+  if (!searchQuery.value.trim()) return
+  router.push({
+    path: '/',
+    query: { search: searchQuery.value }
   })
 }
-// //跳转到cart
-function toCart() {
-  if (isLogined.value) {
-      router.push("/cart")
+
+const handleCommand = (command) => {
+  if (command === 'logout') {
+    store.dispatch('logout')
+    router.push('/')
+  } else if (command === 'Ofme') {
+    router.push('/user')
   } else {
-      showMessage("请先登录！")
-      return ;
+    router.push('/sell')
   }
 }
 
-// 初始化 flowbit 相关组件
+function toCart() {
+  if (!currentUser.value) {
+    ElMessage.error('请先登录')
+    router.push('/login')
+  } else {
+    router.push('/cart')
+  }
+}
+
+function toSellItems() {
+  if (!currentUser.value) {
+    ElMessage.error('请先登录')
+    router.push('/login')
+  } else {
+    router.push('/sell')
+  }
+}
 </script>
+
 <style>
 .el-dropdown:focus {
   outline: none;
