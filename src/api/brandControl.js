@@ -151,10 +151,8 @@ export function getBrandList() {
 export function getBrandInfoById(brandId) {
   var config = {
     method: 'get',
-    url: `http://localhost:7071/work/admin/brand/findBrand?brandId=${brandId}`,
-    headers: {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    }
+    url: `/work/admin/brand/findBrand?brandId=${brandId}`,
+
   };
 
   return axios(config)
