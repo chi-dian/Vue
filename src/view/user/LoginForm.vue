@@ -3,8 +3,8 @@
       <div class="col-span-2 order-2 p-10 md:col-span-1 md:order-1 bg_img">
         <!-- 使用动画类 animate.css 实现弹出效果 -->
           <div class="flex justify-center items-center h-full flex-col animate__animated animate__bounceInLeft animate__fast">
-              <h2 class="font-bold text-4xl mb-7 text-white">校园易购——校园交易平台</h2>
-              <p class="text-white">测试测试测试测试测试测试测试测试测试测试</p>
+              <h2 class="font-bold text-4xl mb-7 text-white">校园易购</h2>
+              <p class="text-white">校园综合交易平台</p>
               <img src="../../assets/img/wle.png" class="w-1/2">
           </div>
       </div>
@@ -47,11 +47,12 @@ import { getCode, login } from '@/api/user'
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { setToken } from '@/composables/auth'//设置token
-import { useUserStore } from '@/stores/user'
+// import { setToken } from '@/composables/auth'//设置token
+// import { useUserStore } from '@/stores/user'
 import { showMessage } from '@/utils/util'
-
-const userStore = useUserStore()
+import { useStore } from 'vuex'
+import {obUserInfo} from '@/api/user'
+const Store = useStore();
 const router = useRouter()
 
 const form = reactive({
@@ -97,11 +98,9 @@ const onSubmit = async () => {
       return false
     }
     login(form.email, form.password, form.checkCodeKey, form.captcha).then((res) => {
-      console.log(res);
       if (res.status=='success') {
         showMessage('登录成功')
-        setToken(res.data.token)//保存token
-        userStore.setUserInfo(res.data.userInfo)//持久化用户信息
+        fetchUserInfo()
         router.push('/index')
       } else {
         showMessage(res.data.message, 'error')
@@ -113,6 +112,40 @@ const onSubmit = async () => {
   })
 
 }
+const fetchUserInfo = async () => {
+  try {
+    const response = await obUserInfo()
+    if (response.status === 'error') {
+      // 处理错误情况
+      if (response.code === 901) {
+        ElMessage.error('用户登录状态异常，请重新登录')
+        // 可能需要重定向到登录页面
+        // router.push('/login')
+      } else {
+        ElMessage.error(response.info)
+      }
+    } else {
+      // 将获取用户数据返回到userData中储存
+      const user = response.data;
+      Store.commit('SET_USER_ID',{email:form.email,newId:user.userId});//更新user的信息
+      const currentuser = {
+        id:user.userId,
+        indexid:null,
+        username:user.nickName,
+        password:form.password,
+        email:form.email,
+        avatar:'default-avatar.jpg',
+        createTime: new
+            Date().toISOString().split('T')[0]
+      };
+      Store.commit('SET_CURRENT_USER',currentuser);
+
+      // base64Image.value=userData.avatar;
+    }
+  } catch (error) {
+    console.error('Failed to fetch user data:', error);
+  }
+};
 
 // 初始化时获取验证码
 // getCaptcha()

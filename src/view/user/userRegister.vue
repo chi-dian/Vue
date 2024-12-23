@@ -1,5 +1,5 @@
 <template>
-  <div class="register-main h-[600px]" >
+  <div class="register-main h-[700px]" >
       <div class="flex justify-center mt-[0px]">
           <p class="text-[36px]">注册</p>
       </div>
@@ -79,12 +79,13 @@
 <script setup>
 import { ref,watch,onMounted } from 'vue'
 import { register } from '@/api/user'
-import { useRouter } from 'vue-router'
+import { useRouter} from 'vue-router'
 import { showMessage } from '@/utils/util'
 import { getCode } from "@/api/user";
 import { ElMessage } from 'element-plus';
+import { useStore} from 'vuex'
 
-
+const Store = useStore()
 const router = useRouter()
 const username = ref('')
 const password = ref('')
@@ -169,10 +170,23 @@ const submitForm = async () => {
       return;
   }
   try {
-
-      await register(username.value,email.value, password.value,checkCodeKey.value,captcha.value)
-      showMessage("注册成功！")
+      await register(username.value,email.value, password.value,checkCodeKey.value,captcha.value)//调用注册接口){
+      showMessage("注册成功！");
+      const newUser = {
+            username: username.value,
+            email: email.value,
+            password: password.value, // 注意：实际应用中不应该以明文形式存储密码
+              // 根据实际情况设置注册类型
+            avatar: 'default-avatar.jpg',
+            createTime: new
+            Date().toISOString().split('T')[0]
+          };
+          Store.commit('ADD_USER', newUser)
+          // Store.commit('SET_CURRENT_USER',newUser)
       return router.push('/login')
+      //   }else{
+      //   showMessage( "注册失败了，请重试");
+      // }
       // eslint-disable-next-line
   } catch (error) {
       showMessage("注册失败,请重试！")

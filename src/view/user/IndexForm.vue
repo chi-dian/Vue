@@ -5,32 +5,56 @@
   <div>
     <!-- 轮播图 -->
     <SwiperModule></SwiperModule>
+    <ImgTest></ImgTest>
   </div>
   <div class="leftswiper">
-    <!-- 分类+小轮播 -->
-<!-- <LeftSwiper></LeftSwiper> -->
-<!-- <ListBar></ListBar> -->
   </div>
+<div class="px-4 pt-2 flex justify-center items-center w-full">
+  <div class="mx-auto w-full max-w-7xl">
+    <div class="flex justify-center items-center">
+      <p class="font-bold text-blue-800 text-2xl">最新发布</p>
+    </div>
 
-  <div class="bg-white text-center">
-  <div class="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-15 lg:max-w-7xl lg:px-8">
-    <p class=" font-bold text-blue-800 latest-release ">最新发布</p>
-    <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 mt-50px">
-      <!-- 使用v-for动态渲染产品列表 -->
-      <div v-for="product in paginatedProducts" :key="product.productId" class="group border-2 rounded-md p-2"
-        @click="goProductDetailPage(product.productId)">
-        <div class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-          <!-- 使用产品的图片字段 -->
-          <img :src="product.productCover" :alt="product.productName"
-            class="h-full w-full object-cover object-center group-hover:opacity-75">
+    <div class="mt-4">
+      <!-- 商品图片 -->
+      <div class="grid grid-cols-4 gap-6">
+        <div v-for="product in paginatedProducts" :key="product.id" class="group relative cursor-pointer" @click="goToDetail(product.id)">
+          <!-- 圆角内边距 -->
+          <div class="bg-white rounded-lg p-4 group-hover:-translate-y-1 group-hover:shadow-lg">
+            <img :src="product.images[0]" class="h-64 w-full object-cover" />
+            <!-- 绝对定位和控制背景和布局 -->
+            <div v-if="product.status === 'sold_out'" class="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-xl font-bold">
+              已售罄
+            </div>
+            <!-- 外边距 -->
+            <div class="mt-2">
+              <h3 class="text-lg font-semibold">{{ product.title }}</h3>
+              <div class="mt-1 flex items-center justify-between">
+                <span class="text-red-500 font-bold text-xl">￥{{ product.price }}</span>
+                <span class="text-gray-500">库存: {{ product.stock }}</span>
+              </div>
+              <div class="mt-1 text-gray-500">卖家: {{ getSeller(product.sellerId).username }}</div>
+              <div class="mt-2 flex items-center">
+                <el-button type="primary" size="large" round :disabled="isCurrentUserProduct(product) || product.status === 'sold_out'" @click.stop="handleBuy(product)" class="button-spacing">
+                {{ getBuyButtonText(product) }}
+              </el-button>
+              <el-button size="large" :disabled="isCurrentUserProduct(product) || product.status === 'sold_out'" @click.stop="handleAddToCart(product)" type="warning" round class="button-spacing">
+                加入购物车
+              </el-button>
+              </div>
+            </div>
+          </div>
         </div>
-        <h3 class="mt-4 text-base text-gray-700 font-mono">{{ product.productName }}</h3>
-        <!-- 将价格居中 -->
-        <p class="mt-1 text-lg font-medium text-gray-900 text-rose-700 text-center">{{ `$${product.price}` }}</p>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-if="filteredProducts.length === 0" class="mt-4 text-center">
+        <div class="text-gray-500">暂无商品</div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- 分页组件 -->
 <div class="flex justify-center items-center" style="margin-top: 30px;" v-show="paginationShow">
     <el-row>
@@ -46,6 +70,7 @@
     </el-row>
   </div>
 </div>
+
   <!-- 分页组件 -->
 </template>
 <style>
@@ -71,109 +96,127 @@
 .right-container {
   width: 40%; /* 设置分类宽度 */
 }
+.el-button.button-spacing + .el-button.button-spacing {
+  margin-left: 60px; /* 按钮之间的间距 */
+}
 </style>
 <script setup>
-// import LeftSwiper from '@/components/LeftSwiper.vue';
-import SwiperModule from '@/components/SwiperModule.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import pg1 from '../../assets/img/LOGO.png'
-// import ListBar from '@/components/ListBar.vue';
-// import { getList } from '../../api/goodsControl'; // 确保路径正确
-
-// const router = useRouter();
-// const products = ref([]);
-// const currentPage = ref(1);
-// const pageSize = ref(12);
-// const totalProducts = ref(0);
-// const paginationShow = ref(true);
-
-// // 计算当前页的产品
-// const paginatedProducts = computed(() => {
-//   const start = (currentPage.value - 1) * pageSize.value;
-//   const end = start + pageSize.value;
-//   return products.value.slice(start, end);
-// });
-
-// // 获取产品列表
-// const fetchProducts = async (page) => {
-//   try {
-//     const response = await getList(page);
-//     products.value = response.data;
-//     totalProducts.value = response.total; // 假设后端返回了总数据量
-//   } catch (error) {
-//     console.error('获取产品列表失败:', error);
-//   }
-// };
-
-// // 在组件挂载时调用API函数
-// onMounted(() => {
-//   // fetchProducts(currentPage.value);
-// });
-
-// // 分页逻辑
-// const handleCurrentChange = (newPage) => {
-//   currentPage.value = newPage;
-//   fetchProducts(newPage);
-// };
-
-// // 跳转到产品详情页
-// const goProductDetailPage = (productId) => {
-//   router.push({ name: 'ProductDetail', params: { id: productId } });
-// };
-
-// 静态数据模拟
+import { ElMessage } from 'element-plus';
+import SwiperModule from '@/components/SwiperModule.vue';
 
 const router = useRouter();
-const products = ref([
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  { productId: 1, productCover: pg1, productName: '产品1', price: 100 },
-  { productId: 2, productCover: pg1, productName: '产品2', price: 200 },
-  { productId: 3, productCover: pg1, productName: '产品3', price: 150 },
-  // 添加更多产品数据...
-]);
-const currentPage = ref(1);
-const pageSize = ref(12);
-const totalProducts = ref(products.value.length);
-const paginationShow = ref(true);
+const store = useStore();
+const currentUser = computed(() => store.state.currentUser);
 
-// 计算当前页的产品
-const paginatedProducts = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return products.value.slice(start, end);
+// 定义 filteredProducts 计算属性
+const filteredProducts = computed(() => {
+  let products = store.getters.availableProducts;
+  return [...products].sort((a, b) => {
+    return new Date(b.createTime || 0) - new Date(a.createTime || 0);
+  });
 });
 
-// 分页逻辑
+// 定义分页相关的响应式引用和计算属性
+const currentPage = ref(1);
+const pageSize = ref(12);
+const totalProducts = computed(() => filteredProducts.value.length);
+const paginationShow = ref(true);
+
+// 计算当前页面的商品列表
+const paginatedProducts = computed(() => {
+  return filteredProducts.value.slice(
+    (currentPage.value - 1) * pageSize.value,
+    currentPage.value * pageSize.value
+  );
+});
+
+// 分页改变处理函数
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
 };
 
-// 跳转到产品详情页
-const goProductDetailPage = (productId) => {
-  router.push('/detail/' + productId)
-}
+// 获取卖家信息
+const getSeller = (sellerId) => {
+  return store.state.users.find(u => u.id === sellerId) || {};
+};
 
-// 在组件挂载时调用API函数
-onMounted(() => {
-  // 使用静态数据，不需要调用API
-});
+// 判断是否是当前用户的商品
+const isCurrentUserProduct = (product) => {
+  return currentUser.value && product.sellerId === currentUser.value.id;
+};
+
+// 获取购买按钮文本
+const getBuyButtonText = (product) => {
+  if (isCurrentUserProduct(product)) {
+    return '不可购买';
+  }
+  if (product.status === 'sold_out') {
+    return '已售罄';
+  }
+  return '立即购买';
+};
+
+// 处理购买
+const handleBuy = async (product) => {
+  if (!currentUser.value) {
+    ElMessage.warning("请先登录");
+    router.push('/login');
+    return;
+  }
+
+  if (isCurrentUserProduct(product)) {
+    ElMessage.warning("不能购买自己的商品");
+    return;
+  }
+
+  // 检查商品状态和库存
+  if (product.status !== 'available') {
+    ElMessage.error("商品已下架");
+    return;
+  }
+
+  if (product.stock <= 0) {
+    ElMessage.error('商品库存不足');
+    return;
+  }
+
+  // 直接跳转到结算页面
+  router.push({
+    path: '/checkout',
+    query: {
+      from: 'direct',
+      productId: product.id,
+      quantity: 1
+    }
+  });
+};
+
+// 修改添加到购物车的方法
+const handleAddToCart = (product) => {
+  if (!currentUser.value) {
+    router.push('/login');
+    return;
+  }
+
+  if (product.status !== 'available' || product.stock <= 0) {
+    ElMessage.warning('商品已售罄');
+    return;
+  }
+
+  store.commit('ADD_TO_CART', {
+    userId: currentUser.value.id,
+    productId: product.id,
+    quantity: 1
+  });
+  ElMessage.success('已加入购物车');
+};
+
+const goToDetail = (productId) => {
+  router.push(`/product/${productId}`);
+};
 </script>
+
 
